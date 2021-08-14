@@ -43,23 +43,44 @@ def handler_client_connection(client_connection,client_address):
         data_received = client_connection.recv(RECV_BUFFER_SIZE)
         remote_string = str(data_received.decode(ENCODING_FORMAT))
         remote_command = remote_string.split()
+        if (len(remote_command) == 0):
+            continue
         command = remote_command[0]
         print (f'Data received from: {client_address[0]}:{client_address[1]}')
         
-        if (command == 'gen-table'):
-            response = '100 OK\n'
-            table_in_string = '-------------\n-\n-\n-------------\n'
-            client_connection.sendall(table_in_string.encode(ENCODING_FORMAT))
-        elif (command == 'exit'):
-            response = '200 BYE\n'
-            client_connection.sendall(response.encode(ENCODING_FORMAT))
-            is_connected = False
+        
+        # Command with arguments
+        if (len(remote_command) > 1):
+            if (command == 'gen-table'):
+                if (len(remote_command) < 4):
+                    response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
+                    client_connection.sendall(response.encode(ENCODING_FORMAT))    
+                value, ir, total_months = verify_arguments(remote_command[1], remote_command[2], remote_command[3])
+                table_in_string = generate_table(value, ir, total_months)
+                client_connection.sendall(table_in_string.encode(ENCODING_FORMAT))
+            else:
+                response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
+                client_connection.sendall(response.encode(ENCODING_FORMAT))
+        
+        #Command without arguments
         else:
-            response = '400 BCMD\n\rCommand-Description: Bad command\n\r'
-            client_connection.sendall(response.encode(ENCODING_FORMAT))
+            if (command == 'exit'):
+                response = '200 BYE\n'
+                client_connection.sendall(response.encode(ENCODING_FORMAT))
+                is_connected = False
+            else:
+                response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
+                client_connection.sendall(response.encode(ENCODING_FORMAT))
+
     
     print(f'Now, client {client_address[0]}:{client_address[1]} is disconnected...')
     client_connection.close()
+
+def verify_arguments(val, ir, m):
+    return val, ir, m
+
+def generate_table(value, ir, total_months):
+    return f'-------------\n- Value: {value}\n- Interest Rate: {ir}\n- Total months: {total_months}\n-------------\n'
 
 if __name__ == "__main__":
     main()
