@@ -6,12 +6,16 @@ PORT = 10000
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
-print("SERVER LISTENING ON PORT {0}...".format(PORT))
+print('SERVER LISTENING ON PORT {0}...'.format(PORT))
 s.listen(5)
-(conn, addr) = s.accept()
-print('Connected by', addr)
+
 while True:
-    data = conn.recv(1024)
-    if not data:
-        break
-    conn.sendall(data)
+    (conn, addr) = s.accept()
+    print('Connected by', addr)
+    while True:
+        conn.send(b'Write a message: ')
+        data = conn.recv(1024)
+        if not data:
+            break
+        conn.send(b'We can repeat it! ')
+        conn.sendall(data)
