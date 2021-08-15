@@ -74,7 +74,6 @@ def handler_client_connection(client_connection,client_address):
             response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
             client_connection.sendall(response.encode(ENCODING_FORMAT))
         
-    
     print(f'Now, client {client_address[0]}:{client_address[1]} is disconnected...')
     client_connection.close()
 
@@ -97,7 +96,7 @@ def verify_arguments(val, ir, m):
     return 0
 
 def generate_table(value, ir, total_months):
-    result = f'''************************
+    desc = f'''************************
 * Initial capital : {value}
 * Interest rate   : {ir} %
 * Total periods   : {total_months}
@@ -109,13 +108,26 @@ def generate_table(value, ir, total_months):
 
     exp_interest = (1+ir)**total_months
     monthly_payment = (value * ir * exp_interest)/(exp_interest - 1)
-    table = [[0, 0, 0, 0, value], [1, monthly_payment, monthly_payment - value*ir, value*ir, value - (monthly_payment - value*ir)]]
 
-    table_string = tabulate(table, headers=['Month', 'Monthly payment', 'Debt payment', 'Interest payment', 'Remaining debt'])
+    # Header
+    table_string =  f'|{"":->5}+{"":->17}+{"":->17}+{"":->17}+{"":->19}|\n'
+    table_string += f'|{"Month":>5}|{"Monthly payment":>17}|{"Debt payment":>17}|{"Interest payment":>17}|{"Remaining debt":>19}|\n'
+    table_string += f'|{"":->5}+{"":->17}+{"":->17}+{"":->17}+{"":->19}|\n'
+    
+    # First row
+    table_string += f'|{"0":>5}|{"":>17}|{"":>17}|{"":>17}|{value:>17,.2f} $|\n'
 
-    result += table_string
+    prev_value = value
+    # Generate each row
+    for i in range(1, total_months+1):
+        ir_payment = prev_value*ir
+        cap_payment = monthly_payment - ir_payment
+        amount = prev_value - cap_payment
+        table_string += f'|{i:>5}|{monthly_payment:>15,.2f} $|{cap_payment:>15,.2f} $|{ir_payment:>15,.2f} $|{amount:>17,.2f} $|\n'
+        prev_value = amount
+    table_string += f'|{"":->5}+{"":->17}+{"":->17}+{"":->17}+{"":->19}|\n'
 
-    return result
+    return desc + table_string + '\n'
 
 if __name__ == "__main__":
     main()
