@@ -43,41 +43,57 @@ def handler_client_connection(client_connection,client_address):
         data_received = client_connection.recv(RECV_BUFFER_SIZE)
         remote_string = str(data_received.decode(ENCODING_FORMAT))
         remote_command = remote_string.split()
+        print (f'Data received from: {client_address[0]}:{client_address[1]}')
+
         if (len(remote_command) == 0):
             continue
-        command = remote_command[0]
-        print (f'Data received from: {client_address[0]}:{client_address[1]}')
-        
-        
-        # Command with arguments
-        if (len(remote_command) > 1):
-            if (command == 'gen-table'):
-                if (len(remote_command) < 4):
-                    response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
-                    client_connection.sendall(response.encode(ENCODING_FORMAT))    
-                value, ir, total_months = verify_arguments(remote_command[1], remote_command[2], remote_command[3])
-                table_in_string = generate_table(value, ir, total_months)
-                client_connection.sendall(table_in_string.encode(ENCODING_FORMAT))
-            else:
-                response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
-                client_connection.sendall(response.encode(ENCODING_FORMAT))
-        
-        #Command without arguments
-        else:
-            if (command == 'exit'):
-                response = '200 BYE\n'
-                client_connection.sendall(response.encode(ENCODING_FORMAT))
-                is_connected = False
-            else:
-                response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
-                client_connection.sendall(response.encode(ENCODING_FORMAT))
 
+        command = remote_command[0]
+
+        # Command exit
+        if (command == 'exit'):
+            response = '200 BYE\n'
+            client_connection.sendall(response.encode(ENCODING_FORMAT))
+            is_connected = False
+        elif (command == 'gen-table'):
+            if (len(remote_command) < 4):
+                response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
+                client_connection.sendall(response.encode(ENCODING_FORMAT))
+                continue
+            error_code = verify_arguments(remote_command[1], remote_command[2], remote_command[3])
+            if (error_code > 0):
+                response = f'40{error_code} IARG\n\rInvalid arguments\n401=init-value, 402=ir, 403=total-months\n\r'
+                client_connection.sendall(response.encode(ENCODING_FORMAT))
+                continue
+            value, ir, total_months = remote_command[1], remote_command[2], remote_command[3]
+            
+            table_in_string = generate_table(value, ir, total_months)
+            client_connection.sendall(table_in_string.encode(ENCODING_FORMAT))
+        else:
+            response = f'400 BCMD\n\rCommand-Description: Unknown command "{command}"\n\r'
+            client_connection.sendall(response.encode(ENCODING_FORMAT))
+        
     
     print(f'Now, client {client_address[0]}:{client_address[1]} is disconnected...')
     client_connection.close()
 
 def verify_arguments(val, ir, m):
-    return val, ir, m
+    try:
+        float(val)
+    except ValueError:
+        return 1
+    
+    try:
+        float(ir)
+    except ValueError:
+        return 2
+
+    try:
+        float(m)
+    except ValueError:
+        return 3
+
+    return 0
 
 def generate_table(value, ir, total_months):
     return f'-------------\n- Value: {value}\n- Interest Rate: {ir}\n- Total months: {total_months}\n-------------\n'
