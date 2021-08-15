@@ -27,7 +27,7 @@ def main():
         if complete_command == '':
             print('Please input a valid command...')
             complete_command = input()                        
-        elif (complete_command == constants.DATA):
+        elif (complete_command == constants.CIR):
             data_to_send = input('Input data to send: ') 
             command_and_data_to_send = complete_command + ' ' + data_to_send
             client_socket.send(bytes(command_and_data_to_send,constants.ENCONDING_FORMAT))

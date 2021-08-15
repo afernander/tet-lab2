@@ -32,9 +32,9 @@ def handler_client_connection(client_connection,client_address):
         remote_command = remote_string.split()
         command = remote_command[0]
         print (f'Data received from: {client_address[0]}:{client_address[1]}')
-        print(command)
+
         
-        if (command == constants.CIR):
+        if (command == constants.HELO):
             c = 4+8
             response = str(c) + '100 OK\n'
             client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
@@ -42,8 +42,9 @@ def handler_client_connection(client_connection,client_address):
             response = '200 BYE\n'
             client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
             is_connected = False
-        elif (command == constants.DATA):
-            response = "300 DRCV\n"
+        elif (command == constants.CIR):
+            partial_response = change_ir(remote_command)
+            response = str(partial_response) + " 300 DRCV\n"
             client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
         else:
             response = '400 BCMD\n\rCommand-Description: Bad command\n\r'
@@ -51,6 +52,37 @@ def handler_client_connection(client_connection,client_address):
     
     print(f'Now, client {client_address[0]}:{client_address[1]} is disconnected...')
     client_connection.close()
+
+
+def change_ir(remote_command):
+    print(remote_command)
+    if(len(remote_command) < 3):
+        return "Missing arguments"
+    elif(remote_command[2] == "EM" and remote_command[3] == "EA"):
+        return (((1+(float(remote_command[1])/100))**12) - 1) * 100
+    elif(remote_command[2] == "EM" and remote_command[3] == "NMV"):
+        return float(remote_command[1])*12
+    elif(remote_command[2] == "EM" and remote_command[3] == "NAV"):
+        return (((1+(float(remote_command[1])/100))**12)-1)*100
+    elif(remote_command[2] == "EA" and remote_command[3] == "EM"):
+        return (((1+(float(remote_command[1])/100))**(1/12)) - 1) * 100
+    elif (remote_command[2] == "EA" and remote_command[3] == "NMV"):
+        return  (((1+(float(remote_command[1])/100))**(1/12)) - 1) * 12 * 100
+    elif (remote_command[2] == "EA" and remote_command[3] == "NAV"):
+        return  remote_command[1]
+    elif (remote_command[2] == "NMV" and remote_command[3] == "EM"):
+        return float(remote_command[1])/12
+    elif (remote_command[2] == "NMV" and remote_command[3] == "EA"):
+        return (((((float(remote_command[1])/100)/12) + 1)**12) - 1) * 100
+    elif (remote_command[2] == "NMV" and remote_command[3] == "NAV"):
+        return (((((float(remote_command[1])/100)/12) + 1)**12) - 1) * 100
+    elif (remote_command[2] == "NAV" and remote_command[3] == "EM"):
+        return ((((float(remote_command[1])/100) + 1)**(1/12)) - 1) * 100
+    elif (remote_command[2] == "NAV" and remote_command[3] == "EA"):
+        return remote_command[1]
+    elif (remote_command[2] == "NAV" and remote_command[3] == "NMV"):
+        return ((((float(remote_command[1])/100) + 1)**(1/12)) - 1) * 12 * 100
+
 
 #Function to start server process...
 def server_execution():
