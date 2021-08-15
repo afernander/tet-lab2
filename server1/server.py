@@ -3,6 +3,7 @@
 #!/usr/bin/env python3
 import socket
 import threading
+from tabulate import tabulate
 
 IP_SERVER = '127.0.0.1'
 PORT = 10000
@@ -96,7 +97,25 @@ def verify_arguments(val, ir, m):
     return 0
 
 def generate_table(value, ir, total_months):
-    return f'-------------\n- Value: {value}\n- Interest Rate: {ir}\n- Total months: {total_months}\n-------------\n'
+    result = f'''************************
+* Initial capital : {value}
+* Interest rate   : {ir} %
+* Total periods   : {total_months}
+************************\n\n'''
+
+    value = float(value)
+    ir = float(ir)/100
+    total_months = int(total_months)
+
+    exp_interest = (1+ir)**total_months
+    monthly_payment = (value * ir * exp_interest)/(exp_interest - 1)
+    table = [[0, 0, 0, 0, value], [1, monthly_payment, monthly_payment - value*ir, value*ir, value - (monthly_payment - value*ir)]]
+
+    table_string = tabulate(table, headers=['Month', 'Monthly payment', 'Debt payment', 'Interest payment', 'Remaining debt'])
+
+    result += table_string
+
+    return result
 
 if __name__ == "__main__":
     main()
