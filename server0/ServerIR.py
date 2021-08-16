@@ -35,8 +35,7 @@ def handler_client_connection(client_connection,client_address):
 
         
         if (command == constants.HELO):
-            c = 4+8
-            response = str(c) + '100 OK\n'
+            response = '100 OK\n'
             client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
         elif (command == constants.QUIT):
             response = '200 BYE\n'
@@ -44,7 +43,7 @@ def handler_client_connection(client_connection,client_address):
             is_connected = False
         elif (command == constants.CIR):
             partial_response = change_ir(remote_command)
-            response = str(partial_response) + " 300 DRCV\n"
+            response = str(round(partial_response, 2)) + "%\n300 DRCV\n"
             client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
         else:
             response = '400 BCMD\n\rCommand-Description: Bad command\n\r'
