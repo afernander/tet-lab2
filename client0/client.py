@@ -40,7 +40,7 @@ def main():
             print('Connected to the server from:', local_tuple)
             
             data_to_send = input('Input data to send: ') 
-            command_and_data_to_send = "CIR" + ' ' + data_to_send
+            command_and_data_to_send = command_to_send + ' ' + data_to_send
             client_socket.send(bytes(command_and_data_to_send,constants.ENCONDING_FORMAT))
             data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)        
             print(data_received.decode(constants.ENCONDING_FORMAT))
@@ -49,9 +49,7 @@ def main():
             client_socket.send(bytes(command_and_data_to_send,constants.ENCONDING_FORMAT))
             data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)  
         else:        
-            client_socket.send(bytes(command_to_send,constants.ENCONDING_FORMAT))
-            data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)        
-            print(data_received.decode(constants.ENCONDING_FORMAT))
+            print('\nPlease input a valid command... \n')  
         client_socket.close()   
     
     client_socket.send(bytes(command_to_send,constants.ENCONDING_FORMAT))

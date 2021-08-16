@@ -52,11 +52,11 @@ def handler_client_connection(client_connection,client_address):
         command = remote_command[0]
 
         # Command exit
-        if (command == 'exit'):
+        if (command == 'QUIT'):
             response = '200 BYE\n'
             client_connection.sendall(response.encode(ENCODING_FORMAT))
             is_connected = False
-        elif (command == 'gen-table'):
+        elif (command == 'TABLE'):
             if (len(remote_command) < 4):
                 response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
                 client_connection.sendall(response.encode(ENCODING_FORMAT))
