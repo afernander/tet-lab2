@@ -31,6 +31,7 @@ def handler_client_connection(client_connection,client_address):
         remote_string = str(data_recevived.decode(constants.ENCONDING_FORMAT))
         remote_command = remote_string.split()
         command = remote_command[0]
+        print(remote_command)
         print (f'Data received from: {client_address[0]}:{client_address[1]}')
 
         
