@@ -16,11 +16,16 @@ def handler_client_connection(client_connection,client_address):
 
         command = remote_command[0]
 
+        # Command ping
+        if (command == constants.PING):
+            response = '100 OK\n'
+            client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
         # Command exit
-        if (command == constants.QUIT):
+        elif (command == constants.QUIT):
             response = '200 BYE\n'
             client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
             is_connected = False
+        # Command gen-table
         elif (command == constants.TABLE):
             if (len(remote_command) < 4):
                 response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
