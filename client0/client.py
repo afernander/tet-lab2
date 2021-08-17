@@ -1,4 +1,5 @@
 
+import time
 import os
 import socket
 import constants
@@ -36,9 +37,14 @@ def main():
         # Convert interest rates
         if (command_to_send == constants.CONVERT_CODE):
             # Connection
-            client_socket.connect((constants.CONVERT_SERVER, constants.CONVERT_PORT))
-            # local_tuple = client_socket.getsockname()
-            
+            try:
+                client_socket.connect((constants.CONVERT_SERVER, constants.CONVERT_PORT))
+            except:
+                os.system('clear')
+                print('Connection refused! Please contact the administrator')
+                time.sleep(3)
+                continue
+
             # Starting...
             ir = 0
             actual_irt = '-'
@@ -49,13 +55,20 @@ def main():
             # INTEREST RATE
             print('\nInput the interest rate value (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
-            while(not is_float(data_to_send)):
+            while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
             ir = float(data_to_send)
 
@@ -67,12 +80,19 @@ def main():
             print('3) NMV')
             print('4) NAV')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
-            while(is_invalid_option(data_to_send, 1, 4)):
+            while(is_invalid_option(data_to_send, 1, 4) and data_to_send != 'q'):
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
             actual_irt = ir_types[int(data_to_send) - 1]
 
@@ -84,12 +104,20 @@ def main():
             print('3) NMV')
             print('4) NAV')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
-            while(is_invalid_option(data_to_send, 1, 4)):
+            while(is_invalid_option(data_to_send, 1, 4) and data_to_send != 'q'):
                 data_to_send = input(': ')
                 if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
             new_irt = ir_types[int(data_to_send) - 1]
 
@@ -113,9 +141,14 @@ def main():
         # Generate a repayment table according to an interest rate
         elif (command_to_send == constants.TABLE_CODE):
             # Connection
-            client_socket.connect((constants.TABLE_SERVER, constants.TABLE_PORT))
-            # local_tuple = client_socket.getsockname()
-            
+            try:
+                client_socket.connect((constants.TABLE_SERVER, constants.TABLE_PORT))
+            except:
+                os.system('clear')
+                print('Connection refused! Please contact the administrator')
+                time.sleep(3)
+                continue
+
             # Starting...
             init_value = 0
             ir = 0
@@ -125,13 +158,20 @@ def main():
             # INITIAL CAPITAL
             print('\nSet the initial capital to borrow (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close() 
+                continue
 
-            while(not is_float(data_to_send)):
+            while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close() 
+                continue
 
             init_value = float(data_to_send)
 
@@ -139,13 +179,20 @@ def main():
             print_gen_table_header(init_value, ir, months)
             print('\nInput the interest rate value (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
-            while(not is_float(data_to_send)):
+            while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
             ir = float(data_to_send)
 
@@ -153,12 +200,19 @@ def main():
             print_gen_table_header(init_value, ir, months)
             print('\nSet the periods amount to pay (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
-            while(not is_float(data_to_send)):
+            while(not (is_float(data_to_send) or data_to_send == 'q')):
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'): continue
+            if (data_to_send == 'q'):
+                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
+                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
+                client_socket.close()
+                continue
 
             months = int(data_to_send)
 
@@ -219,7 +273,5 @@ def print_gen_table_header(init_value, ir, months):
  \____|_____|_| \_|     |_/_/   \_|____/|_____|_____|
 Amount: {init_value:>,} $\t I. rate: {ir:.1f} % EM\t Periods: {months} months''')
     
-
-
 if __name__ == '__main__':
     main()
