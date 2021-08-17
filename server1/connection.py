@@ -1,4 +1,3 @@
-from tabulate import tabulate
 import constants
 
 # Handler for manage incomming clients conections...
@@ -28,12 +27,12 @@ def handler_client_connection(client_connection,client_address):
         # Command gen-table
         elif (command == constants.TABLE):
             if (len(remote_command) < 4):
-                response = f'400 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
+                response = f'410 MARG\n\rMissing arguments: gen-table <init-value> <ir-%> <total-months>\n\r'
                 client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
                 continue
             error_code = verify_arguments(remote_command[1], remote_command[2], remote_command[3])
             if (error_code > 0):
-                response = f'40{error_code} IARG\n\rInvalid arguments\n401=init-value, 402=ir, 403=total-months\n\r'
+                response = f'42{error_code} IARG\n\rInvalid arguments\n401=init-value, 402=ir, 403=total-months\n\r'
                 client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
                 continue
             value, ir, total_months = remote_command[1], remote_command[2], remote_command[3]
@@ -66,7 +65,8 @@ def verify_arguments(val, ir, m):
     return 0
 
 def generate_table(value, ir, total_months):
-    desc = f'''************************
+    desc = f'''100 OK
+************************
 * Initial capital : {value}
 * Interest rate   : {ir} %
 * Total periods   : {total_months}
