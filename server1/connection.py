@@ -82,7 +82,7 @@ def generate_table(value, ir, total_months):
 
     exp_interest = (1+ir)**total_months
     monthly_payment = (value * ir * exp_interest)/(exp_interest - 1)
-
+    
     # Header
     table_string =  f'|{"":->5}+{"":->17}+{"":->17}+{"":->17}+{"":->19}|\n'
     table_string += f'|{"Month":>5}|{"Monthly payment":>17}|{"Debt payment":>17}|{"Interest payment":>17}|{"Remaining debt":>19}|\n'
