@@ -24,6 +24,10 @@ def handler_client_connection(client_connection,client_address):
             response = '200 BYE\n'
             client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
             is_connected = False
+        # Command help
+        elif (command == constants.HELP):
+            response = '100 OK\nWelcome to Interest Rate Conversion Server!\nAvailable commands: help, ping, convert, exit\n\r'
+            client_connection.sendall(response.encode(constants.ENCODING_FORMAT))
         # Command convert
         elif (command == constants.CIR):
             if (len(remote_command) < 4):
