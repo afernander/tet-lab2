@@ -72,7 +72,9 @@ def change_ir(remote_command):
     actual_irt = remote_command[2]
     new_irt = remote_command[3]
 
-    if(actual_irt == "EM" and new_irt == "EA"):
+    if(actual_irt == new_irt):
+        return value
+    elif(actual_irt == "EM" and new_irt == "EA"):
         return (((1+(value/100))**12) - 1) * 100
     elif(actual_irt == "EM" and new_irt == "NMV"):
         return value*12
