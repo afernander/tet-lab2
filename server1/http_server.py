@@ -17,12 +17,12 @@ class TableServer(BaseHTTPRequestHandler):
                 self.send_response(400)
                 self.send_header("content-type", "text/plain")
                 self.end_headers()
-                self.wfile.write(bytes("Missing arguments on query string (initValue, ir, months)", "utf-8"))
+                self.wfile.write(bytes("Missing arguments on query string (initValue, ir, months)", constants.ENCODING_FORMAT))
             elif verify_arguments(query['initValue'], query['ir'], query['months']) < 0:
                 self.send_response(400)
                 self.send_header("content-type", "text/plain")
                 self.end_headers()
-                self.wfile.write(bytes("Incorrect values: some query params has 'str' instead of 'float'", "utf-8"))
+                self.wfile.write(bytes("Incorrect values: some query params has 'str' instead of 'float'", constants.ENCODING_FORMAT))
             else:
                 initValue = float(query['initValue'])
                 ir = float(query['ir'])
@@ -32,32 +32,32 @@ class TableServer(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header("content-type", "text/plain")
                 self.end_headers()
-                self.wfile.write(bytes(res, "utf-8"))
+                self.wfile.write(bytes(res, constants.ENCODING_FORMAT))
         
         elif (path == '/ping'):
             self.send_response(200)
             self.send_header("content-type", "text/plain")
             self.end_headers()
-            self.wfile.write(bytes("Connection established", "utf-8"))
+            self.wfile.write(bytes("Connection established", constants.ENCODING_FORMAT))
         
         elif (path == '/help'):
             self.send_response(200)
             self.send_header("content-type", "text/plain")
             self.end_headers()
-            self.wfile.write(bytes("Welcome to Generate Repayment Table Server!\nAvailable resources: /, /help, /ping\n\n", "utf-8"))
-            self.wfile.write(bytes("RESOURCES\n", "utf-8"))
-            self.wfile.write(bytes("/ (usage: /?initValue=FLOAT&ir=FLOAT&months=INT\n", "utf-8"))
-            self.wfile.write(bytes("    This resource returns a repayment table according to initial capital, interest rate and total months to pay.\n\n", "utf-8"))
-            self.wfile.write(bytes("/help (usage: /help\n", "utf-8"))
-            self.wfile.write(bytes("    This resource explains all available server interactions and resources.\n\n", "utf-8"))
-            self.wfile.write(bytes("/ping (usage: /ping\n", "utf-8"))
-            self.wfile.write(bytes("    This resource helps to test if server connection was established.\n\n", "utf-8"))
+            self.wfile.write(bytes("Welcome to Generate Repayment Table Server!\nAvailable resources: /, /help, /ping\n\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("RESOURCES\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("/ (usage: /?initValue=FLOAT&ir=FLOAT&months=INT)\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("    This resource returns a repayment table according to initial capital, interest rate and total months to pay.\n\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("/help (usage: /help)\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("    This resource explains all available server interactions and resources.\n\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("/ping (usage: /ping)\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("    This resource helps to test if server connection was established.\n\n", constants.ENCODING_FORMAT))
 
         else:
             self.send_response(404)
             self.send_header("content-type", "text/plain")
             self.end_headers()
-            self.wfile.write(bytes("404 Error: Resource %s not found" % path, "utf-8"))
+            self.wfile.write(bytes("404 Error: Resource %s not found" % path, constants.ENCODING_FORMAT))
 
 def verify_arguments(val, ir, m):
     try:
