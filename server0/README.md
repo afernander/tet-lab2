@@ -1,4 +1,4 @@
-# EC2 Machine: `server1`
+# EC2 Machine: `server0`
 
 This file will explain how to use `server0`.
 
