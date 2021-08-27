@@ -47,7 +47,7 @@ class ConvertIRServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes("Welcome to Interest Rate Conversion Server!\\nAvailable resources: /, /help, /ping\n\n", constants.ENCODING_FORMAT))
             self.wfile.write(bytes("RESOURCES\n", constants.ENCODING_FORMAT))
             self.wfile.write(bytes("/ (usage: /?value=FLOAT&actualIrType=STR&newIrType=STR)\n", constants.ENCODING_FORMAT))
-            self.wfile.write(bytes("    This resource returns a repayment table according to initial capital, interest rate and total months to pay.\n\n", constants.ENCODING_FORMAT))
+            self.wfile.write(bytes("    This resource changes interest rate type for another one.\n\n", constants.ENCODING_FORMAT))
             self.wfile.write(bytes("/help (usage: /help)\n", constants.ENCODING_FORMAT))
             self.wfile.write(bytes("    This resource explains all available server interactions and resources.\n\n", constants.ENCODING_FORMAT))
             self.wfile.write(bytes("/ping (usage: /ping)\n", constants.ENCODING_FORMAT))
