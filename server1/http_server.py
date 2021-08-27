@@ -33,6 +33,26 @@ class TableServer(BaseHTTPRequestHandler):
                 self.send_header("content-type", "text/plain")
                 self.end_headers()
                 self.wfile.write(bytes(res, "utf-8"))
+        
+        elif (path == '/ping'):
+            self.send_response(200)
+            self.send_header("content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Connection established", "utf-8"))
+        
+        elif (path == '/help'):
+            self.send_response(200)
+            self.send_header("content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Welcome to Generate Repayment Table Server!\nAvailable resources: /, /help, /ping\n\n", "utf-8"))
+            self.wfile.write(bytes("RESOURCES\n", "utf-8"))
+            self.wfile.write(bytes("/ (usage: /?initValue=FLOAT&ir=FLOAT&months=INT\n", "utf-8"))
+            self.wfile.write(bytes("    This resource returns a repayment table according to initial capital, interest rate and total months to pay.\n\n", "utf-8"))
+            self.wfile.write(bytes("/help (usage: /help\n", "utf-8"))
+            self.wfile.write(bytes("    This resource explains all available server interactions and resources.\n\n", "utf-8"))
+            self.wfile.write(bytes("/ping (usage: /ping\n", "utf-8"))
+            self.wfile.write(bytes("    This resource helps to test if server connection was established.\n\n", "utf-8"))
+
         else:
             self.send_response(404)
             self.send_header("content-type", "text/plain")
