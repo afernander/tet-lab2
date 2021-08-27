@@ -98,9 +98,8 @@ def main():
 
             try:
                 conn = http.client.HTTPConnection(constants.CONVERT_SERVER, constants.CONVERT_PORT)
-                conn.request("GET", "/") # TODO: Query string for convert server
+                conn.request("GET", f'/?value={ir}&actualIrType={actual_irt}&newIrType={new_irt}') # TODO: Query string for convert server
                 res = conn.getresponse()
-
                 # ANSWER
                 answer = res.read().decode(constants.ENCODING_FORMAT)
                 print('\nAnswer')
