@@ -2,22 +2,21 @@
 
 This file will explain how to use `server1`.
 
-This server has two commands: `gen-table` and `exit`.
+This server uses HTTP to work. The following resources are available:
 
-
-## Commands
+## Resources
 <hr>
 
-`gen-table`
+**PATH.** `/`
 
-**NAME.** `gen-table` - generate the repayment table
+**USAGE.** ```/?initValue=FLOAT&ir=FLOAT&months=INT```
 
-**SYNOPSIS.** ```gen-table INIT_VALUE IR_% TOTAL_MONTHS```
+**CONTENT-TYPE.** `text/plain`
 
-**DESCRIPTION.**
-- `INIT_VALUE` is the initial capital of debt.
-- `IR_%` is the monthly effective interest rate to apply.
-- `TOTAL_MONTHS` is the total periods to pay.
+**DESCRIPTION.** This generates the repayment table according to setted parameters.
+- `initValue` is the initial capital of debt.
+- `ir` is the monthly effective interest rate to apply.
+- `months` is the total periods to pay.
 
 **EXAMPLE.**
 
@@ -25,12 +24,24 @@ This server has two commands: `gen-table` and `exit`.
 
 <hr>
 
-`exit`
+**PATH.** `/help`
 
-**NAME.**
-`exit` - close connection with server.
+**USAGE.** `/help`
+
+**CONTENT-TYPE.** `text/plain`
+
+**DESCRIPTION.** This returns the server available resources (and how to use it).
 
 <hr>
 
+**PATH.** `/ping`
+
+**USAGE.** `/ping`
+
+**CONTENT-TYPE.** `text/plain`
+
+**DESCRIPTION.** This tests the server connection.
+
+<hr>
 
 

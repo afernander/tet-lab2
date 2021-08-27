@@ -2,6 +2,7 @@
 import time
 import os
 import socket
+import http.client
 import constants
 
 def main():
@@ -12,9 +13,8 @@ def main():
     local_tuple = client_socket.getsockname()
     print('Connected to the server from:', local_tuple)
     """
-    command_to_send = ""
-    while command_to_send != constants.QUIT_CODE:
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    resource = ""
+    while resource != constants.QUIT_CODE:
         os.system('clear')
         print('Welcome to IR Calculator v1.0!')
         print('''
@@ -30,16 +30,17 @@ def main():
         print('2) Generate a repayment table according to an interest rate.')
         print('3) Exit.')
         
-        command_to_send = ''
-        while(is_invalid_option(command_to_send, 1, 3)):
-            command_to_send = input(': ')
+        resource = ''
+        while(is_invalid_option(resource, 1, 3)):
+            resource = input(': ')
         
         # Convert interest rates
-        if (command_to_send == constants.CONVERT_CODE):
-            # Connection
+        if (resource == constants.CONVERT_CODE):
+            # Test connection
             try:
-                client_socket.connect((constants.CONVERT_SERVER, constants.CONVERT_PORT))
-            except:
+                conn = http.client.HTTPConnection(constants.CONVERT_SERVER, constants.CONVERT_PORT)
+                conn.request("GET", "/ping")
+            except ConnectionRefusedError:
                 os.system('clear')
                 print('Connection refused! Please contact the administrator')
                 time.sleep(3)
@@ -55,20 +56,11 @@ def main():
             # INTEREST RATE
             print('\nInput the interest rate value (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
 
             while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
+            if (data_to_send == 'q'): continue
 
             ir = float(data_to_send)
 
@@ -80,19 +72,10 @@ def main():
             print('3) NMV')
             print('4) NAV')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
 
             while(is_invalid_option(data_to_send, 1, 4) and data_to_send != 'q'):
                 data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
+            if (data_to_send == 'q'): continue
 
             actual_irt = ir_types[int(data_to_send) - 1]
 
@@ -104,46 +87,40 @@ def main():
             print('3) NMV')
             print('4) NAV')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
 
             while(is_invalid_option(data_to_send, 1, 4) and data_to_send != 'q'):
                 data_to_send = input(': ')
-                if (data_to_send == 'q'): break
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
+            if (data_to_send == 'q'): continue
 
             new_irt = ir_types[int(data_to_send) - 1]
 
             print_convert_header(ir, actual_irt, new_irt)
 
-            command_and_data_to_send = f'{constants.CONVERT} {ir} {actual_irt} {new_irt}'
-            client_socket.send(command_and_data_to_send.encode(constants.ENCODING_FORMAT))
-            data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-            
-            # ANSWER
-            answer = data_received.decode(constants.ENCODING_FORMAT).split('\n')[1]
-            print('\nAnswer')
-            print(f': {answer} % {new_irt}')
-
-            command_and_data_to_send = constants.QUIT
-            client_socket.send(command_and_data_to_send.encode(constants.ENCODING_FORMAT))
-            data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-            print('\nPress any key to go back...')
-            input()
-        
-        # Generate a repayment table according to an interest rate
-        elif (command_to_send == constants.TABLE_CODE):
-            # Connection
             try:
-                client_socket.connect((constants.TABLE_SERVER, constants.TABLE_PORT))
-            except:
+                conn = http.client.HTTPConnection(constants.CONVERT_SERVER, constants.CONVERT_PORT)
+                conn.request("GET", "/") # TODO: Query string for convert server
+                res = conn.getresponse()
+
+                # ANSWER
+                answer = res.read().decode(constants.ENCODING_FORMAT)
+                print('\nAnswer')
+                print(f': {answer} % {new_irt}')
+
+                print('\nPress any key to go back...')
+                input()
+            except ConnectionRefusedError:
+                os.system('clear')
+                print('Connection refused! Please contact the administrator')
+                time.sleep(3)
+                continue
+
+        # Generate a repayment table according to an interest rate
+        if (resource == constants.TABLE_CODE):
+            # Test connection
+            try:
+                conn = http.client.HTTPConnection(constants.TABLE_SERVER, constants.TABLE_PORT)
+                conn.request("GET", "/ping")
+            except ConnectionRefusedError:
                 os.system('clear')
                 print('Connection refused! Please contact the administrator')
                 time.sleep(3)
@@ -158,20 +135,11 @@ def main():
             # INITIAL CAPITAL
             print('\nSet the initial capital to borrow (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close() 
-                continue
 
             while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close() 
-                continue
+            if (data_to_send == 'q'): continue
 
             init_value = float(data_to_send)
 
@@ -179,20 +147,11 @@ def main():
             print_gen_table_header(init_value, ir, months)
             print('\nInput the interest rate value (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
 
             while(not (is_float(data_to_send) or data_to_send == 'q')):
                 print('Please, input a float number')
                 data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
+            if (data_to_send == 'q'): continue
 
             ir = float(data_to_send)
 
@@ -200,39 +159,33 @@ def main():
             print_gen_table_header(init_value, ir, months)
             print('\nSet the periods amount to pay (enter \'q\' to quit)')
             data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
 
             while(not (is_float(data_to_send) or data_to_send == 'q')):
+                print('Please, input an int number')
                 data_to_send = input(': ')
-            if (data_to_send == 'q'):
-                client_socket.send(constants.QUIT.encode(constants.ENCODING_FORMAT))
-                data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-                client_socket.close()
-                continue
+            if (data_to_send == 'q'): continue
 
             months = int(data_to_send)
 
             print_gen_table_header(init_value, ir, months)
 
-            command_and_data_to_send = f'{constants.TABLE} {init_value} {ir} {months}'
-            client_socket.send(command_and_data_to_send.encode(constants.ENCODING_FORMAT))
-            data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-            
-            # ANSWER
-            answer = data_received.decode(constants.ENCODING_FORMAT).split('\n')[1:]
-            print('\nAnswer')
-            for s in answer: print(s)
+            try:
+                conn = http.client.HTTPConnection(constants.TABLE_SERVER, constants.TABLE_PORT)
+                conn.request('GET', f'/?initValue={init_value}&ir={ir}&months={months}')
+                res = conn.getresponse()
+                # ANSWER
+                answer = res.read().decode(constants.ENCODING_FORMAT)
+                print('\nAnswer')
+                print(answer)
 
-            command_and_data_to_send = constants.QUIT
-            client_socket.send(command_and_data_to_send.encode(constants.ENCODING_FORMAT))
-            data_received = client_socket.recv(constants.RECV_BUFFER_SIZE)
-            print('\nPress any key to go back...')
-            input()
-        client_socket.close() 
+                print('\nPress any key to go back...')
+                input()
+            except ConnectionRefusedError:
+                os.system('clear')
+                print('Connection refused! Please contact the administrator')
+                time.sleep(3)
+                continue
+        conn.close()
     
 def is_invalid_option(menu, init_op, final_op):
     try:
