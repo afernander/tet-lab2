@@ -3,15 +3,15 @@
 First laboratory in "Tópicos Especiales en Telemática" course. EAFIT 2021-2.
 -->
 
-# Laboratorio #1 (Aplicación Distribuida en Sockets TCP/UDP)
+# Laboratorio #2 (Aplicación Distribuida en HTTP)
 
 ## Condiciones del reto 📈
 
-**1.** Defina cualquier tipo de aplicación sencilla distribuida que desee diseñar e implementar (ej. calculadora distribuida, chat, CRUD, etc).
-**2.** Utilizar Sockets TCP o UDP en cualquier lenguaje de programación de su preferencia.
-**3.** Defina, diseñe e implemente el protocolo de aplicación que requiera para implementar dicha aplicación.
-**4.** Realice inicialmente todos los supuestos que requiera respecto a tipo de sistema: C/S o P2P, tipo de arquitectura, y aplique algunos de los conceptos fundamentales de los sistemas distribuidos que se verán en esta Lectura: Introducción a Sistemas Distribuidos.
-**5.** Impleméntela en AWS Educate. Con el fin de probar la funcionalidad del sistema, se requiere que al menos instancie 3 máquinas EC2.
+**1.** Reutilice la misma aplicación desarrollada en el Lab1y rediséñela e impleméntela utilizando el protocolo de aplicación HTTP(ej: calculadora distribuida, chat, crud, et
+**2.** Utilizar una librería HTTP encualquier lenguaje de programación de su preferencia(recomendado Python
+**3.** Defina, diseñe e implemente el mecanismo de comunicación (mensajes y codificación) que requiera para implementar dicha aplicació
+**4.** Realice inicialmente todos los supuestos que requiera respecto a tipo de sistema: C/S o P2P, tipo de arquitectura, y aplique algunos de los conceptos fundamentales de los sistemas distribuidos que se verán en esta Lectura: Introducción a Sistemas Distrib
+**5.** Impleméntela en AWS Educate, para probar el sistema al menos instancie 3 máquinas EC2
 
 ## Solución 👨‍🔬
 
@@ -23,15 +23,6 @@ La arquitectura de esta aplicación es **orientada a servicios (SOA)**, donde te
 
 <!--[DIAGRAMA DE ARQUITECTURA EN AWS]-->
 
-### Explicación de los sockets
-
-Los sockets usados vienen de una implementación de la librería `socket` de Python. La documentación consultada para usarlos la encontramos en [1].
-
-Su comunicación se da por TCP dada la priorización que le damos a que sea orientado a la conexión pues se necesitan respuestas a las solicitudes del usuario (más allá de que sean inmediatas) y son sockets no bloqueantes.
-
-### Manejo de la concurrencia
-
-Para permitir múltiples usuarios en la aplicación decidimos usar hilos con la librería `threading` de Python. Gracias a [este archivo](https://github.com/ST0263/st0263-20212/blob/main/LabSocketsMultiThread/ServerLab.py) que proporcionó el profesor pudimos orientarnos en la creación de los hilos en Python y desarrollar nuestra aplicación cómodamente.
 
 ### Guía de uso
 
