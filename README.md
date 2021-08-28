@@ -7,10 +7,14 @@ First laboratory in "Tópicos Especiales en Telemática" course. EAFIT 2021-2.
 
 ## Condiciones del reto 📈
 
-**1.** Reutilice la misma aplicación desarrollada en el Lab1y rediséñela e impleméntela utilizando el protocolo de aplicación HTTP(ej: calculadora distribuida, chat, crud, et
-**2.** Utilizar una librería HTTP encualquier lenguaje de programación de su preferencia(recomendado Python
+**1.** Reutilice la misma aplicación desarrollada en el Lab1y rediséñela e impleméntela utilizando el protocolo de aplicación HTTP(ej: calculadora distribuida, chat, crud, etc)
+
+**2.** Utilizar una librería HTTP encualquier lenguaje de programación de su preferencia (recomendado Python)
+
 **3.** Defina, diseñe e implemente el mecanismo de comunicación (mensajes y codificación) que requiera para implementar dicha aplicació
-**4.** Realice inicialmente todos los supuestos que requiera respecto a tipo de sistema: C/S o P2P, tipo de arquitectura, y aplique algunos de los conceptos fundamentales de los sistemas distribuidos que se verán en esta Lectura: Introducción a Sistemas Distrib
+
+**4.** Realice inicialmente todos los supuestos que requiera respecto a tipo de sistema: C/S o P2P, tipo de arquitectura, y aplique algunos de los conceptos fundamentales de los sistemas distribuidos que se verán en esta Lectura: Introducción a Sistemas Distribuidos
+
 **5.** Impleméntela en AWS Educate, para probar el sistema al menos instancie 3 máquinas EC2
 
 ## Solución 👨‍🔬
